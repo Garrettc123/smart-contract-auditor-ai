@@ -1,170 +1,93 @@
 # Smart Contract Auditor AI
 
-> AI-powered vulnerability detection for Solidity smart contracts  
-> **Revenue Target**: $25K/month
+🔒 **AI-Powered Security Audits for Smart Contracts**
 
-## Features
+[![Deploy](https://img.shields.io/badge/Deploy-Railway-blueviolet)](https://railway.app)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 
-- 🔍 **Static Analysis** - Pattern matching for common vulnerabilities
-- 🤖 **AI-Powered Analysis** - GPT-4 deep code review
-- 📋 **OWASP Top 10** - Checks against OWASP Smart Contract Top 10
-- 📊 **Risk Scoring** - Quantified security score (0-100)
-- 📄 **Detailed Reports** - Line-by-line vulnerability breakdown
-- ⚡ **Fast** - Results in seconds
-- 🔒 **Secure** - API key authentication + rate limiting
+## 💰 Revenue Model
+- **Basic**: $99/month (5 audits)
+- **Pro**: $299/month (20 audits)
+- **Enterprise**: $999/month (unlimited audits)
+- **Target**: $25K MRR
 
-## Quick Start
+## 🎯 What It Does
+Automatically detects vulnerabilities in Solidity smart contracts:
+- ✅ Reentrancy attacks
+- ✅ Integer overflow/underflow
+- ✅ Access control issues
+- ✅ Gas optimization problems
+- ✅ OWASP Smart Contract Top 10
 
-### 1. Installation
+Generates professional PDF audit reports in seconds.
 
+## 🚀 Quick Deploy (5 minutes)
+
+### Option 1: Railway (Recommended)
 ```bash
-# Clone repository
-git clone https://github.com/Garrettc123/smart-contract-auditor-ai.git
+git clone https://github.com/Garrettc123/smart-contract-auditor-ai
 cd smart-contract-auditor-ai
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your API keys
-```
-
-### 2. Run Locally
-
-```bash
-python app.py
-```
-
-Service runs on `http://localhost:8000`
-
-### 3. Deploy to Railway
-
-```bash
-# Install Railway CLI
-npm i -g @railway/cli
-
-# Login
 railway login
-
-# Deploy
+railway init
 railway up
 ```
 
-## API Usage
-
-### Audit Contract Code
-
+### Option 2: Local Development
 ```bash
-curl -X POST "https://your-app.railway.app/api/v1/audit" \
-  -H "X-API-Key: your-api-key" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "contract_code": "pragma solidity ^0.8.0; contract Test { ... }",
-    "contract_name": "MyContract"
-  }'
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env  # Add your OpenAI API key
+python src/main.py
 ```
 
-### Audit Contract File
+Visit http://localhost:8000
 
-```bash
-curl -X POST "https://your-app.railway.app/api/v1/audit/file" \
-  -H "X-API-Key: your-api-key" \
-  -F "file=@MyContract.sol"
-```
-
-## Response Format
-
-```json
-{
-  "audit_id": "audit_abc123...",
-  "contract_name": "MyContract",
-  "timestamp": "2026-02-08T14:30:00",
-  "vulnerabilities": [
-    {
-      "severity": "high",
-      "category": "Reentrancy",
-      "line_number": 42,
-      "code_snippet": "address.call.value(amount)();",
-      "description": "Potential reentrancy vulnerability...",
-      "recommendation": "Use Checks-Effects-Interactions pattern...",
-      "confidence": 0.9
-    }
-  ],
-  "risk_score": 75.5,
-  "summary": {
-    "critical": 0,
-    "high": 2,
-    "medium": 5,
-    "low": 3,
-    "info": 1
-  },
-  "recommendations": [
-    "Use Checks-Effects-Interactions pattern",
-    "Always check return values from external calls"
-  ]
-}
-```
-
-## Vulnerability Categories
-
-1. **Reentrancy** - External call vulnerabilities
-2. **Access Control** - Authentication/authorization issues
-3. **Arithmetic Issues** - Overflow/underflow
-4. **Unchecked Return Values** - Ignored call results
-5. **Denial of Service** - Gas limit attacks
-6. **Bad Randomness** - Predictable random numbers
-7. **Front-Running** - Transaction ordering attacks
-8. **Time Manipulation** - Block timestamp dependence
-9. **Short Address Attack** - Input validation
-10. **Unknown Unknowns** - Novel vulnerabilities
-
-## Pricing
-
-| Plan | Price | Audits/Month | Support |
-|------|-------|--------------|----------|
-| Basic | $99/mo | 5 | Email |
-| Pro | $299/mo | 20 | Priority Email |
-| Enterprise | $999/mo | Unlimited | Slack + Phone |
-
-## Revenue Model
-
-- **Target**: $25K/month
-- **Pricing**: $99 - $999/month subscriptions
-- **Market**: 50,000+ deployed smart contracts
-- **Conversion**: 15% trial-to-paid
-
-## Tech Stack
-
-- **Backend**: Python 3.11 + FastAPI
-- **AI**: OpenAI GPT-4
+## 📊 Tech Stack
+- **Backend**: FastAPI (Python 3.11)
+- **AI**: GPT-4 Turbo
+- **Security**: Slither static analyzer
+- **Reports**: ReportLab PDF generation
 - **Payments**: Stripe
-- **Deployment**: Railway/Render
-- **Database**: SQLite (logs)
+- **Deploy**: Railway / Docker
 
-## Security
+## 🔧 Environment Variables
+```bash
+OPENAI_API_KEY=sk-...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+DATABASE_URL=postgresql://...
+```
 
-- ✅ API key authentication
-- ✅ Rate limiting (10 req/min)
-- ✅ Input validation
-- ✅ HTTPS only
-- ✅ CORS protection
+## 📈 Revenue Projections
+| Month | Customers | MRR | ARR |
+|-------|-----------|-----|-----|
+| 1 | 10 | $2K | $24K |
+| 3 | 50 | $12K | $144K |
+| 6 | 100 | $25K | $300K |
+| 12 | 200 | $50K | $600K |
 
-## Roadmap
+## 🎨 Features
+- 🔍 Real-time code analysis
+- 📄 Professional PDF reports
+- 🔗 GitHub integration
+- 📧 Email notifications
+- 💳 Stripe billing
+- 📊 Analytics dashboard
+- 🔐 Multi-tenant security
 
-- [ ] Week 1: MVP launch
-- [ ] Week 2: GitHub integration
-- [ ] Week 3: PDF report generation
-- [ ] Week 4: Subscription billing
-- [ ] Month 2: Multi-language support (Rust, Move)
-- [ ] Month 3: CI/CD pipeline integration
+## 📞 Support
+- Email: support@garcar.ai
+- Twitter: @garcarai
+- Website: https://smartcontractauditor.ai
 
-## License
+## 🏆 Competitive Advantage
+- ⚡ **10x Faster**: Results in seconds, not days
+- 💵 **95% Cheaper**: $99 vs $10K traditional audits
+- 🤖 **AI-Powered**: GPT-4 + static analysis
+- 🔄 **Continuous**: Audit every commit
 
-MIT License - See LICENSE file
+---
 
-## Contact
-
-- Website: [smart-contract-auditor.ai](https://smart-contract-auditor.ai)
-- Email: support@garcar-enterprise.com
-- Twitter: [@GarcarEnterprise](https://twitter.com/GarcarEnterprise)
+**Built by [Garcar Enterprise](https://github.com/Garrettc123)**
