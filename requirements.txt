@@ -1,10 +1,10 @@
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
 openai==1.10.0
-sqlalchemy==2.0.25
+sqlalchemy==2.0.36
 pydantic==2.5.3
 python-dotenv==1.0.0
 stripe==7.9.0
 reportlab==4.0.9
-python-multipart==0.0.6
-aiohttp==3.9.1
+python-multipart==0.0.22
+aiohttp==3.12.11
