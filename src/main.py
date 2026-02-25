@@ -6,7 +6,7 @@ Revenue Target: $25K/month
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
@@ -14,17 +14,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from pydantic import BaseModel, Field
 from sqlalchemy import Column, DateTime, Integer, String, Text, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Database setup
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./auditor.db")
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+
+# connect_args only needed for SQLite
+_connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+engine = create_engine(DATABASE_URL, connect_args=_connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+
+
+class Base(DeclarativeBase):
+    pass
+
 
 # OpenAI client (v1 API)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""))
@@ -52,14 +58,13 @@ app.add_middleware(
 # Models
 class Audit(Base):  # type: ignore[valid-type,misc]
     __tablename__ = "audits"
-
     id = Column(Integer, primary_key=True, index=True)
     contract_code = Column(Text)
     contract_name = Column(String)
     severity = Column(String)
     findings_count = Column(Integer)
     report_url = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     user_email = Column(String)
 
 
@@ -107,7 +112,6 @@ Check for:
 6. Front-running vulnerabilities
 7. Timestamp dependence
 8. Denial of service vectors
-
 Return JSON with:
 - severity: "critical" | "high" | "medium" | "low" | "none"
 - findings: [{type, location, description, severity}]
@@ -151,11 +155,12 @@ async def root():
 
 @app.get("/health")
 async def health_check():
+    api_key_configured = bool(os.getenv("OPENAI_API_KEY", ""))
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "database": "connected",
-        "openai": "configured" if client.api_key else "missing",
+        "openai": "configured" if api_key_configured else "missing",
     }
 
 
@@ -169,10 +174,8 @@ async def create_audit(
     Create a new smart contract audit.
     """
     logger.info(f"New audit request: {request.contract_name}")
-
     # Analyze contract
     analysis = await analyze_contract(request.contract_code, request.contract_name)
-
     # Save to database
     audit = Audit(
         contract_code=request.contract_code,
@@ -180,12 +183,11 @@ async def create_audit(
         severity=analysis.get("severity", "unknown"),
         findings_count=len(analysis.get("findings", [])),
         user_email=request.user_email,
-        report_url=f"/reports/{datetime.utcnow().timestamp()}.pdf",
+        report_url=f"/reports/{datetime.now(timezone.utc).timestamp()}.pdf",
     )
     db.add(audit)
     db.commit()
     db.refresh(audit)
-
     return AuditResponse(
         audit_id=audit.id,
         severity=analysis.get("severity", "unknown"),
